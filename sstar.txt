@@ -57,3 +57,4 @@ qmake编译步骤：
 qmake -project
 qmake
 ARCH=arm make
+QT Creator开发环境搭建
