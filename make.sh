@@ -1,0 +1,29 @@
+#!/bin/sh
+    ./configure \
+    -prefix /home/run/qt/install \
+    -static \
+    -release \
+    -opensource \
+    -xplatform linux-arm-gnueabi-g++ \
+    -optimized-qmake -pch \
+    -qt-libjpeg \
+    -qt-libpng \
+    -qt-zlib \
+    -no-opengl \
+    -skip qt3d \
+    -skip qtcanvas3d \
+    -skip qtpurchasing \
+    -skip qtlocation \
+    -skip qttools \
+    -no-sse2 \
+    -no-openssl \
+    -no-cups \
+    -no-glib \
+    -no-iconv \
+    -tslib \
+    -linuxfb \
+    -I /home/run/tslib-1.15/install/include \
+    -L /home/run/tslib-1.15/install/lib \
+    -recheck-all \
+    -nomake examples \
+    -nomake tools

@@ -1,0 +1,59 @@
+交叉工具链配置
+export ARCH=arm
+export CROSS_COMPILE=arm-linux-gnueabihf-
+export PATH=$PATH:/home/run/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin
+arm-linux-gnueabihf-gcc -v
+
+NFS网络文件系统挂载
+mount -t nfs -o nolock 192.168.1.114:/home/run/nfsserver /mnt
+
+内核编译：
+//arch/arm/configs 配置文件提供不同的   设备树选择
+make infinity2m_spinand_ssc011a_s01a_defconfig
+make menuconfig
+make 
+
+release 到project目录 （拷贝）
+cp kernel/arch/arm/boot/uImage.xz project\release\nvr\i2m\011A\glibc\8.2.1\bin\kernel\spinand
+
+project 编译：SSD202 （nand flash）
+./setup_config.sh ./configs/nvr/i2m/8.2.1/spinand.glibc.011a.128
+make image
+
+生成image，目录：project/image/output/images (该目录下全部是要拷贝的文件)
+
+
+
+使用官方脚本编译：./release_to_customer.sh -f nand -p ssd202
+
+setenv serverip 192.168.1.101
+setenv ipaddr 192.168.1.105
+saveenv
+estart 
+estar
+
+出现如下问题：
+mkdir: can't create directory 'test': Read-only file system
+执行重新挂载根目录
+mount rw -o remount / 
+
+TSLIB编译：
+1、从 https://github.com/libts/tslib/releases/tag/1.15 中下载 tslib-1.15tar.bz2 到Linux系统下并解压，进入解压目录，新建install目录
+2、./configure --prefix=/home/ronnie/work/ssd201/qt/tslib-1.15/install --host=arm-linux-gnueabihf     （/home/ronnie/work/ssd201/qt/tslib-1.15/install为install的路径，按本地的来）
+3、make
+4、make install
+QT编译
+1、从 http://download.qt.io/archive/qt/5.15/5.15.0/single/ 下载 qt-everywhere-src-5.15.0.tar.xz 到Linux系统下并解压   tar xf
+2、设置make.sh内--prefix=参数，指定install目录 提前设置好，构建install目录
+3、修改qt-everywhere-src-5.15.0/qtbase/mkspecs/linux-arm-gnueabi-g++/qmake.conf qmake.conf文件
+4、执行./make.sh
+5、执行make   （注意缺少g++  先执行 apt-get install g++）
+6、执行make install
+vi ~/.bashrc
+export PATH=/home/run/qt/install/bin:$PATH
+source ~/.bashrc
+
+qmake编译步骤：
+qmake -project
+qmake
+ARCH=arm make
